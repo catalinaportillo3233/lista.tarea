@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Iniciar / Registrar - Tareas</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+    
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      font-family: 'Poppins', sans-serif;
+      background: url('fondo-retro-anos-60-70-dibujado-mano_23-2149952424.jpg') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    h1, h2, h3 {
+      text-align: center;
+      color: #000;
+    }
+
+    h1 { font-size: 2rem; margin-bottom: 10px; }
+    h2 { font-size: 1.6rem; margin-top: 20px; margin-bottom: 10px; }
+    h3 { font-size: 1.2rem; margin-bottom: 14px; }
+
+    .box {
+      width: 380px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(12px);
+      animation: fadeIn 1s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .tabs button {
+      flex: 1;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      background: #dfe6e9;
+      color: #2d3436;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .3s;
+    }
+
+    .tabs button.active {
+      background: #00cec9;
+      color: #fff;
+      border-color: #00cec9;
+    }
+
+    input[type=text], input[type=password] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-top: 8px;
+      font-size: 15px;
+      transition: .3s;
+    }
+
+    input[type=text]:focus, input[type=password]:focus {
+      border-color: #00cec9;
+      outline: none;
+      box-shadow: 0 0 6px #00cec9;
+    }
+
+    .full {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 0;
+      background: #00cec9;
+      color: #fff;
+      margin-top: 14px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: .3s;
+    }
+
+    .full:hover {
+      background: #00b894;
+      transform: scale(1.03);
+    }
+
+    .center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center
+    }
+
+    .hidden { display: none }
+
+    .tasks {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+      width: 100%;
+    }
+
+    .task {
+      width: 90%;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transition: all .5s ease;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: taskIn .6s forwards;
+    }
+
+    @keyframes taskIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .task:hover {
+      transform: translateY(-3px) scale(1.02);
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .task .text {
+      flex: 1;
+      font-size: 15px;
+      color: #000;
+    }
+
+    .task.done .text {
+      text-decoration: line-through;
+      color: #555;
+    }
+
+    .row {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+      width: 100%;
+    }
+
+    .addInput {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      transition: .3s;
+    }
+
+    .addInput:focus {
+      border-color: #00cec9;
+      outline: none;
+      box-shadow: 0 0 6px #00cec9;
+    }
+
+    .smallBtn {
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 0;
+      background: #00cec9;
+      color: #fff;
+      cursor: pointer;
+      font-weight: 600;
+      transition: .3s;
+    }
+
+    .smallBtn:hover {
+      background: #00b894;
+      transform: scale(1.05);
+    }
+
+    .logout {
+      margin-top: 14px;
+      padding: 10px;
+      width: 100%;
+      border-radius: 8px;
+      border: 0;
+      background: #dfe6e9;
+      cursor: pointer;
+      transition: .3s;
+    }
+
+    .logout:hover {
+      background: #b2bec3;
+    }
+  </style>
+</head>
+<body>
+  <h1 id="mainTitle">Inicia sesión</h1>
+  <div class="box" id="authBox">
+    <div class="tabs">
+      <button id="tabLogin" class="active">Iniciar</button>
+      <button id="tabRegister">Registrar</button>
+    </div>
+
+    <div id="loginForm" class="center">
+      <input id="loginUser" type="text" placeholder="usuario">
+      <input id="loginPass" type="password" placeholder="contraseña">
+      <button id="btnLogin" class="full">Ingresar</button>
+    </div>
+
+    <div id="registerForm" class="center hidden">
+      <input id="regUser" type="text" placeholder="usuario">
+      <input id="regPass" type="password" placeholder="contraseña">
+      <input id="regPass2" type="password" placeholder="repetir contraseña">
+      <button id="btnRegister" class="full">Registrar</button>
+    </div>
+  </div>
+
+  <h2 id="sessionTitle" class="hidden">Gracias por iniciar sesión</h2>
+  <h3 id="taskTitle" class="hidden">Tu lista de tareas</h3>
+
+  <div class="box hidden" id="appBox">
+    <div class="center">
+      <div class="row">
+        <input id="newTaskText" class="addInput" placeholder="nueva tarea">
+        <button id="addTaskBtn" class="smallBtn">Agregar</button>
+      </div>
+      <div class="tasks" id="tasksList"></div>
+      <button id="btnLogout" class="logout">Cerrar sesión</button>
+    </div>
+  </div>
+
+  <script>
+    const LS_USERS = 'mt_users_v1';
+    const LS_SESSION = 'mt_session_v1';
+
+    const loadUsers = () => JSON.parse(localStorage.getItem(LS_USERS) || '{}');
+    const saveUsers = users => localStorage.setItem(LS_USERS, JSON.stringify(users));
+    const getSession = () => localStorage.getItem(LS_SESSION);
+    const setSession = user => localStorage.setItem(LS_SESSION, user);
+    const clearSession = () => localStorage.removeItem(LS_SESSION);
+
+    const tabLogin = document.getElementById('tabLogin');
+    const tabRegister = document.getElementById('tabRegister');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const mainTitle = document.getElementById('mainTitle');
+    const authBox = document.getElementById('authBox');
+    const appBox = document.getElementById('appBox');
+    const sessionTitle = document.getElementById('sessionTitle');
+    const taskTitle = document.getElementById('taskTitle');
+    const tasksList = document.getElementById('tasksList');
+    const addTaskBtn = document.getElementById('addTaskBtn');
+    const newTaskText = document.getElementById('newTaskText');
+    const btnLogout = document.getElementById('btnLogout');
+
+    // Cambiar entre pestañas
+    tabLogin.addEventListener('click', () => {
+      tabLogin.classList.add('active');
+      tabRegister.classList.remove('active');
+      loginForm.classList.remove('hidden');
+      registerForm.classList.add('hidden');
+      mainTitle.textContent = "Inicia sesión";
+    });
+
+    tabRegister.addEventListener('click', () => {
+      tabRegister.classList.add('active');
+      tabLogin.classList.remove('active');
+      registerForm.classList.remove('hidden');
+      loginForm.classList.add('hidden');
+      mainTitle.textContent = "Regístrate";
+    });
+
+    // Registro
+    document.getElementById('btnRegister').addEventListener('click', () => {
+      const u = document.getElementById('regUser').value.trim();
+      const p1 = document.getElementById('regPass').value;
+      const p2 = document.getElementById('regPass2').value;
+      if (!u || !p1 || !p2) return alert("Completa todos los campos");
+      if (p1 !== p2) return alert("Las contraseñas no coinciden");
+
+      const users = loadUsers();
+      if (users[u]) return alert("Ese usuario ya existe");
+
+      users[u] = { password: p1, tasks: [] };
+      saveUsers(users);
+      alert("Registro exitoso, ahora puedes iniciar sesión");
+      tabLogin.click();
+    });
+
+    // Login
+    document.getElementById('btnLogin').addEventListener('click', () => {
+      const u = document.getElementById('loginUser').value.trim();
+      const p = document.getElementById('loginPass').value;
+      const users = loadUsers();
+
+      if (!users[u] || users[u].password !== p) {
+        alert("Usuario o contraseña incorrectos");
+        return;
+      }
+
+      setSession(u);
+      showApp(u);
+    });
+
+    // Mostrar app
+    function showApp(user) {
+      authBox.classList.add('hidden');
+      mainTitle.classList.add('hidden');
+      sessionTitle.classList.remove('hidden');
+      taskTitle.classList.remove('hidden');
+      appBox.classList.remove('hidden');
+      renderTasks(user);
+    }
+
+    // Cerrar sesión
+    btnLogout.addEventListener('click', () => {
+      clearSession();
+      location.reload();
+    });
+
+    // Agregar tarea
+    addTaskBtn.addEventListener('click', () => {
+      const text = newTaskText.value.trim();
+      if (!text) return;
+      const user = getSession();
+      const users = loadUsers();
+      users[user].tasks.push({ text, done: false });
+      saveUsers(users);
+      newTaskText.value = "";
+      renderTasks(user);
+    });
+
+    // Renderizar tareas
+    function renderTasks(user) {
+      const users = loadUsers();
+      const tasks = users[user].tasks || [];
+      tasksList.innerHTML = "";
+      tasks.forEach((t, i) => {
+        const div = document.createElement('div');
+        div.className = 'task' + (t.done ? ' done' : '');
+        const span = document.createElement('span');
+        span.className = 'text';
+        span.textContent = t.text;
+        span.addEventListener('click', () => {
+          t.done = !t.done;
+          saveUsers(users);
+          renderTasks(user);
+        });
+        const btnDel = document.createElement('button');
+        btnDel.textContent = '🗑️';
+        btnDel.className = 'smallBtn';
+        btnDel.addEventListener('click', () => {
+          users[user].tasks.splice(i, 1);
+          saveUsers(users);
+          renderTasks(user);
+        });
+        div.append(span, btnDel);
+        tasksList.appendChild(div);
+      });
+    }
+
+    // Si hay sesión activa
+    const currentUser = getSession();
+    if (currentUser) showApp(currentUser);
+  </script>
+</body>
+</html>
